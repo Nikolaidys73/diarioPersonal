@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diario de Desarrollo Profesional</title>
+    <style>
+        /* === Variables y reset === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            padding: 32px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 3px solid #e0e7ff;
+            padding-bottom: 20px;
+        }
+
+        h1 span {
+            background: #4f46e5;
+            color: white;
+            font-size: 1rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        /* === Botones modernos === */
+        .btn {
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79,70,229,0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* === Header actions === */
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        /* === Selector de fecha === */
+        .fecha-nav {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 24px;
+            margin: 20px 0 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
+        }
+
+        .fecha-nav label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 1rem;
+        }
+
+        .fecha-nav input[type="date"] {
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 1rem;
+            background: white;
+            transition: border 0.2s;
+            flex: 1 1 200px;
+        }
+        .fecha-nav input[type="date"]:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        /* === Formulario agregar === */
+        .form-agregar {
+            background: #ffffff;
+            padding: 28px;
+            border-radius: 28px;
+            margin-bottom: 40px;
+            border: 1px solid #e9eef2;
+            box-shadow: 0 12px 30px -15px rgba(0,0,0,0.2);
+        }
+
+        .form-agregar h3 {
+            font-size: 1.5rem;
+            color: #0f172a;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: 2fr 0.8fr 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .grid-form input,
+        .grid-form select {
+            padding: 14px 18px;
+            border: 2px solid #e9eef2;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: #fcfdff;
+            width: 100%;
+        }
+
+        .grid-form input:focus,
+        .grid-form select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79,70,229,0.15);
+        }
+
+        .grid-form button {
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        /* === Lista de tareas === */
+        .lista-tareas {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Tarjetas con colores por etiqueta */
+        .tarea-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 24px;
+            box-shadow: 0 8px 20px -6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 8px solid;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tarea-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -8px rgba(0,0,0,0.15);
+        }
+
+        /* Colores de borde por etiqueta */
+        .tarea-card[data-etiqueta="FRONT"] { border-left-color: #3b82f6; }
+        .tarea-card[data-etiqueta="BACK"] { border-left-color: #10b981; }
+        .tarea-card[data-etiqueta="DB"] { border-left-color: #f59e0b; }
+        .tarea-card[data-etiqueta="REVIEW"] { border-left-color: #8b5cf6; }
+        .tarea-card[data-etiqueta="OTRO"] { border-left-color: #6b7280; }
+
+        .tarea-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tarea-checkbox {
+            width: 24px;
+            height: 24px;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+
+        .tarea-descripcion {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #0f172a;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .tarea-etiqueta {
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            background: #f1f5f9;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* Fondo de etiqueta por color (opcional) */
+        .tarea-card[data-etiqueta="FRONT"] .tarea-etiqueta { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+        .tarea-card[data-etiqueta="BACK"] .tarea-etiqueta { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+        .tarea-card[data-etiqueta="DB"] .tarea-etiqueta { background: #fed7aa; color: #92400e; border-color: #fcd34d; }
+        .tarea-card[data-etiqueta="REVIEW"] .tarea-etiqueta { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+        .tarea-card[data-etiqueta="OTRO"] .tarea-etiqueta { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+
+        .tarea-detalles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 30px;
+            margin-left: 44px;
+            color: #475569;
+            font-size: 1rem;
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 20px;
+        }
+
+        .tarea-detalles span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tarea-detalles i {
+            color: #64748b;
+            font-style: normal;
+            font-weight: 400;
+            background: #e9eef2;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+
+        .tarea-acciones {
+            display: flex;
+            gap: 10px;
+            margin-left: 44px;
+        }
+
+        .tarea-acciones .btn {
+            padding: 8px 18px;
+            font-size: 0.9rem;
+        }
+
+        /* Modo edición */
+        .editando {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .editando input,
+        .editando select {
+            padding: 12px 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 1rem;
+            flex: 1 1 150px;
+            background: white;
+        }
+
+        .editando input:focus,
+        .editando select:focus {
+            border-color: #4f46e5;
+            outline: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8fafc;
+            border-radius: 32px;
+            color: #64748b;
+            font-size: 1.2rem;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .buscador-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f3ff 0%, #faf5ff 100%);
+            border-radius: 20px;
+            border: 2px solid #e9d5ff;
+        }
+
+        .buscador-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #buscarInput {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e9d5ff;
+            border-radius: 40px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.2s ease;
+        }
+
+        #buscarInput:focus {
+            outline: none;
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+        }
+
+        .resultados-busqueda {
+            background: white;
+            border-radius: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid #e9d5ff;
+        }
+
+        .resultado-item {
+            padding: 18px;
+            border-bottom: 1px solid #f3e8ff;
+            transition: background 0.2s ease;
+        }
+
+        .resultado-item:hover {
+            background: #f9f5ff;
+        }
+
+        .resultado-item:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-fecha {
+            font-weight: 700;
+            color: #7c3aed;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .resultado-tarea {
+            background: #f5f3ff;
+            padding: 14px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            border-left: 4px solid #a78bfa;
+        }
+
+        .resultado-tarea:last-child {
+            margin-bottom: 0;
+        }
+
+        .resultado-descripcion {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .resultado-detalles {
+            font-size: 0.9rem;
+            color: #6b7280;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .resultado-detalle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .resultado-detalle i {
+            color: #7c3aed;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .resultado-etiqueta {
+            display: inline-block;
+            background: #ede9fe;
+            color: #6d28d9;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .busqueda-resumen {
+            text-align: center;
+            padding: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        .import-options {
+            background: #f1f4f9;
+            padding: 16px 24px;
+            border-radius: 40px;
+            margin: 10px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            border: 1px solid #cbd5e1;
+        }
+
+        .mensaje {
+            background: #4f46e5;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 60px;
+            font-weight: 500;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 14px rgba(79,70,229,0.4);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .grid-form {
+                grid-template-columns: 1fr 1fr;
+            }
+            .grid-form button {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .grid-form { grid-template-columns: 1fr; }
+            .grid-form button { grid-column: span 1; }
+            .tarea-detalles { margin-left: 0; }
+            .tarea-acciones { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        📓 Diario de Desarrollo
+        <span>sin servidor</span>
+    </h1>
+
+    <div class="header-actions">
+        <button class="btn btn-success" id="exportarBtn">📤 Exportar backup</button>
+        <button class="btn btn-secondary" id="importarBtn">📥 Importar backup</button>
+        <input type="file" id="importFile" accept=".json,application/json" style="display: none;">
+    </div>
+
+    <div id="importOptions" class="import-options" style="display: none;">
+        <label style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="mergeCheck" checked> Fusionar con datos actuales
+        </label>
+        <button class="btn btn-primary" id="confirmImport">Confirmar importación</button>
+        <button class="btn btn-secondary" id="cancelImport">Cancelar</button>
+    </div>
+
+    <div class="fecha-nav">
+        <label for="fecha">📅 Fecha:</label>
+        <input type="date" id="fecha">
+        <button class="btn btn-secondary" id="irFecha">Ir</button>
+        <button class="btn btn-secondary" id="hoyBtn">Hoy</button>
+    </div>
+
+    <div class="buscador-section">
+        <div class="buscador-container">
+            <input type="text" id="buscarInput" placeholder="🔍 Buscar en todas las tareas (palabras, commits, ramas...)">
+            <button class="btn btn-primary" id="buscarBtn">Buscar</button>
+            <button class="btn btn-secondary" id="limpiarBtn" style="display:none;">Limpiar</button>
+        </div>
+        <div id="resultadosBusqueda" class="resultados-busqueda" style="display:none;"></div>
+    </div>
+
+    <div class="form-agregar">
+        <h3>➕ Nueva tarea</h3>
+        <form id="formAgregar">
+            <div class="grid-form">
+                <input type="text" id="descripcion" placeholder="Descripción *" required>
+                <select id="etiqueta">
+                    <option value="FRONT">FRONT</option>
+                    <option value="BACK">BACK</option>
+                    <option value="DB">DB</option>
+                    <option value="REVIEW">REVIEW</option>
+                    <option value="OTRO">OTRO</option>
+                </select>
+                <input type="text" id="commit" placeholder="Commit">
+                <input type="text" id="rama" placeholder="Rama">
+                <input type="text" id="notas" placeholder="Notas">
+                <button type="submit" class="btn btn-primary">Agregar</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="listaTareas" class="lista-tareas"></div>
+</div>
+
+<script>
+    (function() {
+        const STORAGE_KEY = 'diario_desarrollo_pro';
+
+        // Elementos
+        const fechaInput = document.getElementById('fecha');
+        const irBtn = document.getElementById('irFecha');
+        const hoyBtn = document.getElementById('hoyBtn');
+        const formAgregar = document.getElementById('formAgregar');
+        const lista = document.getElementById('listaTareas');
+        const exportarBtn = document.getElementById('exportarBtn');
+        const importarBtn = document.getElementById('importarBtn');
+        const importFile = document.getElementById('importFile');
+        const importOptions = document.getElementById('importOptions');
+        const mergeCheck = document.getElementById('mergeCheck');
+        const confirmImport = document.getElementById('confirmImport');
+        const cancelImport = document.getElementById('cancelImport');
+        const buscarInput = document.getElementById('buscarInput');
+        const buscarBtn = document.getElementById('buscarBtn');
+        const limpiarBtn = document.getElementById('limpiarBtn');
+        const resultadosBusqueda = document.getElementById('resultadosBusqueda');
+
+        let datos = cargarDatos();
+        let archivoSeleccionado = null;
+
+        const hoy = new Date().toISOString().split('T')[0];
+        fechaInput.value = hoy;
+        renderizarTareas(hoy);
+
+        // Eventos
+        irBtn.addEventListener('click', () => {
+            const fecha = fechaInput.value;
+            if (fecha) renderizarTareas(fecha);
+        });
+
+        hoyBtn.addEventListener('click', () => {
+            fechaInput.value = hoy;
+            renderizarTareas(hoy);
+        });
+
+        formAgregar.addEventListener('submit', (e) => {
+            e.preventDefault();
+            agregarTarea();
+        });
+
+        exportarBtn.addEventListener('click', exportarDatos);
+
+        importarBtn.addEventListener('click', () => importFile.click());
+
+        importFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const contenido = JSON.parse(ev.target.result);
+                    if (typeof contenido !== 'object' || Array.isArray(contenido)) {
+                        throw new Error('Formato inválido');
+                    }
+                    archivoSeleccionado = contenido;
+                    importOptions.style.display = 'flex';
+                } catch (error) {
+                    alert('Error al leer el archivo: ' + error.message);
+                    importFile.value = '';
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        confirmImport.addEventListener('click', () => {
+            if (!archivoSeleccionado) return;
+
+            if (mergeCheck.checked) {
+                for (const [fecha, tareas] of Object.entries(archivoSeleccionado)) {
+                    if (Array.isArray(tareas)) {
+                        if (!datos[fecha]) datos[fecha] = [];
+                        const idsExistentes = new Set(datos[fecha].map(t => t.id));
+                        for (const tarea of tareas) {
+                            if (!idsExistentes.has(tarea.id)) {
+                                datos[fecha].push(tarea);
+                            }
+                        }
+                    }
+                }
+            } else {
+                datos = archivoSeleccionado;
+            }
+
+            guardarDatos(datos);
+            renderizarTareas(fechaInput.value);
+            importOptions.style.display = 'none';
+            importFile.value = '';
+            archivoSeleccionado = null;
+            mostrarMensaje('✅ Datos importados correctamente');
+        });
+
+        cancelImport.addEventListener('click', () => {
+            importOptions.style.display = 'none';
+            importFile.value = '';
+            archivoSeleccionado = null;
+        });
+
+        buscarBtn.addEventListener('click', () => {
+            const termino = buscarInput.value.trim();
+            if (termino) {
+                buscar(termino);
+                limpiarBtn.style.display = 'inline-flex';
+            }
+        });
+
+        buscarInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const termino = buscarInput.value.trim();
+                if (termino) {
+                    buscar(termino);
+                    limpiarBtn.style.display = 'inline-flex';
+                }
+            }
+        });
+
+        limpiarBtn.addEventListener('click', () => {
+            buscarInput.value = '';
+            resultadosBusqueda.style.display = 'none';
+            resultadosBusqueda.innerHTML = '';
+            limpiarBtn.style.display = 'none';
+        });
+
+        function cargarDatos() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function guardarDatos(nuevosDatos) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(nuevosDatos));
+            datos = nuevosDatos;
+        }
+
+        function mostrarMensaje(texto) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'mensaje';
+            msgDiv.textContent = texto;
+            document.querySelector('.container').insertBefore(msgDiv, document.querySelector('.fecha-nav'));
+            setTimeout(() => msgDiv.remove(), 3000);
+        }
+
+        function exportarDatos() {
+            const datosStr = JSON.stringify(datos, null, 2);
+            const blob = new Blob([datosStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diario_backup_${hoy}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            mostrarMensaje('📦 Datos exportados');
+        }
+
+        function agregarTarea() {
+            const fecha = fechaInput.value;
+            if (!fecha) return;
+
+            const descripcion = document.getElementById('descripcion').value.trim();
+            if (!descripcion) {
+                alert('La descripción no puede estar vacía');
+                return;
+            }
+
+            const tarea = {
+                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                descripcion: descripcion,
+                estado: 0,
+                etiqueta: document.getElementById('etiqueta').value,
+                commit: document.getElementById('commit').value.trim(),
+                rama: document.getElementById('rama').value.trim(),
+                notas: document.getElementById('notas').value.trim()
+            };
+
+            if (!datos[fecha]) datos[fecha] = [];
+            datos[fecha].push(tarea);
+            guardarDatos(datos);
+
+            document.getElementById('descripcion').value = '';
+            document.getElementById('commit').value = '';
+            document.getElementById('rama').value = '';
+            document.getElementById('notas').value = '';
+            document.getElementById('etiqueta').value = 'FRONT';
+
+            renderizarTareas(fecha);
+        }
+
+        function renderizarTareas(fecha) {
+            const tareas = datos[fecha] || [];
+            if (tareas.length === 0) {
+                lista.innerHTML = '<div class="empty-state">📭 No hay tareas para este día. ¡Agrega una!</div>';
+                return;
+            }
+
+            tareas.sort((a, b) => b.id.localeCompare(a.id));
+
+            let html = '';
+            tareas.forEach(t => {
+                html += `
+                    <div class="tarea-card" data-id="${t.id}" data-etiqueta="${escapeHtml(t.etiqueta || 'OTRO')}">
+                        <div class="tarea-header">
+                            <input type="checkbox" class="tarea-checkbox" ${t.estado ? 'checked' : ''}>
+                            <span class="tarea-descripcion">${escapeHtml(t.descripcion)}</span>
+                            <span class="tarea-etiqueta">${escapeHtml(t.etiqueta || 'OTRO')}</span>
+                        </div>
+                        <div class="tarea-detalles">
+                            <span><i>Commit</i> ${escapeHtml(t.commit || '-')}</span>
+                            <span><i>Rama</i> ${escapeHtml(t.rama || '-')}</span>
+                            <span><i>Notas</i> ${escapeHtml(t.notas || '-')}</span>
+                        </div>
+                        <div class="tarea-acciones">
+                            <button class="btn btn-secondary editar-btn">Editar</button>
+                            <button class="btn btn-danger eliminar-btn">Eliminar</button>
+                            <button class="btn btn-primary guardar-btn" style="display:none;">Guardar</button>
+                            <button class="btn btn-secondary cancelar-btn" style="display:none;">Cancelar</button>
+                        </div>
+                        <div class="editando" style="display:none;">
+                            <input type="text" class="edit-desc" value="${escapeHtml(t.descripcion)}" placeholder="Descripción">
+                            <select class="edit-etiqueta">
+                                <option value="FRONT" ${t.etiqueta == 'FRONT' ? 'selected' : ''}>FRONT</option>
+                                <option value="BACK" ${t.etiqueta == 'BACK' ? 'selected' : ''}>BACK</option>
+                                <option value="DB" ${t.etiqueta == 'DB' ? 'selected' : ''}>DB</option>
+                                <option value="REVIEW" ${t.etiqueta == 'REVIEW' ? 'selected' : ''}>REVIEW</option>
+                                <option value="OTRO" ${t.etiqueta == 'OTRO' ? 'selected' : ''}>OTRO</option>
+                            </select>
+                            <input type="text" class="edit-commit" value="${escapeHtml(t.commit || '')}" placeholder="Commit">
+                            <input type="text" class="edit-rama" value="${escapeHtml(t.rama || '')}" placeholder="Rama">
+                            <input type="text" class="edit-notas" value="${escapeHtml(t.notas || '')}" placeholder="Notas">
+                        </div>
+                    </div>
+                `;
+            });
+            lista.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return text;
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function buscar(termino) {
+            const terminoLower = termino.toLowerCase();
+            const resultados = {};
+
+            // Buscar en todos los datos
+            for (const [fecha, tareas] of Object.entries(datos)) {
+                if (!Array.isArray(tareas)) continue;
+
+                const tareasEncontradas = tareas.filter(tarea => {
+                    return (
+                        (tarea.descripcion && tarea.descripcion.toLowerCase().includes(terminoLower)) ||
+                        (tarea.commit && tarea.commit.toLowerCase().includes(terminoLower)) ||
+                        (tarea.rama && tarea.rama.toLowerCase().includes(terminoLower)) ||
+                        (tarea.notas && tarea.notas.toLowerCase().includes(terminoLower)) ||
+                        (tarea.etiqueta && tarea.etiqueta.toLowerCase().includes(terminoLower))
+                    );
+                });
+
+                if (tareasEncontradas.length > 0) {
+                    resultados[fecha] = tareasEncontradas;
+                }
+            }
+
+            renderizarResultados(resultados, termino);
+        }
+
+        function renderizarResultados(resultados, termino) {
+            const fechas = Object.keys(resultados).sort().reverse();
+            const totalTareas = fechas.reduce((sum, fecha) => sum + resultados[fecha].length, 0);
+
+            if (totalTareas === 0) {
+                resultadosBusqueda.innerHTML = '<div class="busqueda-resumen">❌ No se encontraron resultados para: <strong>' + escapeHtml(termino) + '</strong></div>';
+                resultadosBusqueda.style.display = 'block';
+                return;
+            }
+
+            let html = '<div class="busqueda-resumen">✅ Se encontraron <strong>' + totalTareas + '</strong> tarea(s) con: <strong>' + escapeHtml(termino) + '</strong></div>';
+
+            fechas.forEach(fecha => {
+                const tareas = resultados[fecha];
+                const fechaFormato = new Date(fecha + 'T00:00:00').toLocaleDateString('es-AR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                html += '<div class="resultado-item">';
+                html += '<div class="resultado-fecha">📅 ' + fechaFormato + ' (' + tareas.length + ')</div>';
+
+                tareas.forEach(t => {
+                    html += '<div class="resultado-tarea">';
+                    html += '<div class="resultado-descripcion">' + escapeHtml(t.descripcion) + '</div>';
+                    html += '<div class="resultado-detalles">';
+
+                    if (t.commit) {
+                        html += '<div class="resultado-detalle"><i>📦 Commit:</i> ' + escapeHtml(t.commit) + '</div>';
+                    }
+                    if (t.rama) {
+                        html += '<div class="resultado-detalle"><i>🌿 Rama:</i> ' + escapeHtml(t.rama) + '</div>';
+                    }
+                    if (t.notas) {
+                        html += '<div class="resultado-detalle" style="grid-column: 1 / -1;"><i>📝 Notas:</i> ' + escapeHtml(t.notas) + '</div>';
+                    }
+
+                    html += '</div>';
+                    html += '<span class="resultado-etiqueta">' + escapeHtml(t.etiqueta || 'OTRO') + '</span>';
+                    html += '</div>';
+                });
+
+                html += '</div>';
+            });
+
+            resultadosBusqueda.innerHTML = html;
+            resultadosBusqueda.style.display = 'block';
+        }
+
+        // Event delegation
+        lista.addEventListener('change', (e) => {
+            if (e.target.classList.contains('tarea-checkbox')) {
+                const card = e.target.closest('.tarea-card');
+                const id = card.dataset.id;
+                const fecha = fechaInput.value;
+                const tarea = datos[fecha]?.find(t => t.id === id);
+                if (tarea) {
+                    tarea.estado = e.target.checked ? 1 : 0;
+                    guardarDatos(datos);
+                }
+            }
+        });
+
+        lista.addEventListener('click', (e) => {
+            const card = e.target.closest('.tarea-card');
+            if (!card) return;
+            const id = card.dataset.id;
+            const fecha = fechaInput.value;
+
+            if (e.target.classList.contains('eliminar-btn')) {
+                if (confirm('¿Eliminar tarea?')) {
+                    datos[fecha] = datos[fecha].filter(t => t.id !== id);
+                    if (datos[fecha].length === 0) delete datos[fecha];
+                    guardarDatos(datos);
+                    renderizarTareas(fecha);
+                }
+                return;
+            }
+
+            if (e.target.classList.contains('editar-btn')) {
+                card.querySelector('.tarea-header').style.display = 'none';
+                card.querySelector('.tarea-detalles').style.display = 'none';
+                card.querySelector('.editar-btn').style.display = 'none';
+                card.querySelector('.eliminar-btn').style.display = 'none';
+                card.querySelector('.guardar-btn').style.display = 'inline-flex';
+                card.querySelector('.cancelar-btn').style.display = 'inline-flex';
+                card.querySelector('.editando').style.display = 'flex';
+            }
+
+            if (e.target.classList.contains('cancelar-btn')) {
+                card.querySelector('.tarea-header').style.display = 'flex';
+                card.querySelector('.tarea-detalles').style.display = 'flex';
+                card.querySelector('.editar-btn').style.display = 'inline-flex';
+                card.querySelector('.eliminar-btn').style.display = 'inline-flex';
+                card.querySelector('.guardar-btn').style.display = 'none';
+                card.querySelector('.cancelar-btn').style.display = 'none';
+                card.querySelector('.editando').style.display = 'none';
+            }
+
+            if (e.target.classList.contains('guardar-btn')) {
+                const desc = card.querySelector('.edit-desc').value.trim();
+                if (!desc) {
+                    alert('La descripción no puede estar vacía');
+                    return;
+                }
+                const etiqueta = card.querySelector('.edit-etiqueta').value;
+                const commit = card.querySelector('.edit-commit').value;
+                const rama = card.querySelector('.edit-rama').value;
+                const notas = card.querySelector('.edit-notas').value;
+
+                const tarea = datos[fecha]?.find(t => t.id === id);
+                if (tarea) {
+                    tarea.descripcion = desc;
+                    tarea.etiqueta = etiqueta;
+                    tarea.commit = commit;
+                    tarea.rama = rama;
+                    tarea.notas = notas;
+                    guardarDatos(datos);
+                    renderizarTareas(fecha);
+                }
+            }
+        });
+    })();
+</script>
+</body>
+</html>

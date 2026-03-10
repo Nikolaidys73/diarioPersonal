@@ -146,4 +146,4 @@ R: Porque esto es tuyo, sin publicidad, sin algoritmos raros, y puedes exportarl
 
 **Creado con ❤️, café ☕ y la frustración de olvidar qué se hizo en las reuniones**
 
-Happy logging! 🚀
+
