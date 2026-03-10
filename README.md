@@ -2,6 +2,11 @@
 
 > *"Porque decir 'no recuerdo qué hice hoy' es un clásico que no va del todo bien en las reuniones de seguimiento"*
 
+COMO FUNCIONA?
+
+## SOLO TENES QUE BAJAR EL ARCHIVO index.html - Nada mas que eso, increible!
+
+
 ## ¿Qué es esto? 🤔
 
 Tu nuevo mejor amigo: una **aplicación web para registrar tareas de desarrollo** sin necesidad de servidores, bases de datos o complicaciones. Es como un diario, pero para que no tengas que mentir mañana en la standup diciendo que "trabajaste en cosas".
